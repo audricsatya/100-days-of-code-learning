@@ -18,7 +18,3 @@ On Day 8 of the 100 Days of Code challenge, the focus is on learning how to use 
 - Functions with parameters make code reusable and modular.
 - Parameters allow you to customize the behavior of a function.
 - Returning values enables functions to produce outputs that can be used elsewhere in the program.
-
-## Resources
-- [Python Documentation: Functions](https://docs.python.org/3/tutorial/controlflow.html#defining-functions)
-- [100 Days of Code: The Complete Python Pro Bootcamp](https://www.udemy.com/course/100-days-of-code/)
