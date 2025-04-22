@@ -38,9 +38,10 @@ for angle in range(3, 360):
         timmy.forward(10)
         timmy.right(360 / angle)
 
-# Generated random colors
+# Generated random color
 screen = Screen()
 screen.colormode(255)  # Set color mode to 255 for RGB values
+
 def random_color():
     r = random.randint(0, 255)
     g = random.randint(0, 255)
