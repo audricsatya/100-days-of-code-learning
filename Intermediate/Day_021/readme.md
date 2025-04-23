@@ -16,9 +16,10 @@ On Day 21, we continue building on the Snake game project, adding more features 
 4. **Polish the Game**: Add visual and sound effects to improve the overall experience.
 
 ## Code Structure
-- `snake.py`: Contains the `Snake` class.
-- `main.py`: The main game loop and logic.
-- `food.py`: Food Logic
+- `snake.py`: Defines the `Snake` class and its behavior.
+- `main.py`: Manages the main game loop and overall logic.
+- `food.py`: Handles the logic for generating and managing the food items.
+- `scoreboard.py`: Implements the scoring system and displays the player's score.
 
 ## Reflection
 Document your progress, challenges, and learnings for Day 21.
