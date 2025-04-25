@@ -17,10 +17,12 @@ screen.setup(
 )
 
 # input for user bet
-user_bet = screen.textinput(
-    title="Make your bet",
-    prompt="Which turtle will win the race? Enter a color: "
-)
+user_bet = None
+while not user_bet:
+    user_bet = screen.textinput(
+        title="Make your bet",
+        prompt="Which turtle will win the race? Enter a color: "
+    )
 
 # debugging user
 if user_bet:
