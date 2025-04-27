@@ -8,14 +8,6 @@ image = "Intermediate/Day_025/states/blank_states_img.gif"
 screen.addshape(image)
 turtle.shape(image)
 
-# Get the mouse coordinates
-# def get_mouse_click_coordinates(x, y):
-#     print(x, y)
-#
-#
-# turtle.onscreenclick(get_mouse_click_coordinates)
-# turtle.mainloop()
-
 text_writer = turtle.Turtle()
 text_writer.penup()
 text_writer.hideturtle()
@@ -38,10 +30,7 @@ while len(guessed_states) < 50:
                                     prompt="What's another state's name").title()
 
     if answer_state == "Exit":
-        missing_states = []
-        for state in data_states_list:
-            if state not in guessed_states:
-                missing_states.append(state)
+        missing_states = [state for state in data_states_list if state not in guessed_states]
         new_data = pandas.DataFrame(missing_states)
         new_data.to_csv("Intermediate/Day_025/states/states_to_learn.csv")
         break
@@ -50,4 +39,3 @@ while len(guessed_states) < 50:
         guessed_states.append(answer_state)
         state_data = data[data["state"] == answer_state]
         write_states(x=int(state_data.x), y=int(state_data.y), name=state_data.state.item())
-
