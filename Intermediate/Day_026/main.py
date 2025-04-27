@@ -25,3 +25,11 @@ list_of_strings = ['9', '0', '32', '8', '2', '8', '64', '29', '42', '99']
 numbers = [int(string) for string in list_of_strings]
 result = [number for number in numbers if number%2 == 0]
 print(result)
+
+with open("file1.txt") as f1, open("file2.txt") as f2:
+   file1 = [int(item.strip()) for item in f1.readlines()]
+   file2 = [int(item.strip()) for item in f2.readlines()]
+
+result = [number for number in file1 if number in file2]
+
+print(result)
