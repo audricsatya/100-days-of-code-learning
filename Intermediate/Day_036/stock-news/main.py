@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 from twilio.rest import Client
+import smtplib
 
 STOCK = "NVDA" # Stock symbol for NVIDIA
 COMPANY_NAME = "NVIDIA" # Company name for news articles
@@ -10,6 +11,9 @@ TWILIO_ACCOUNT_SID = "demo"  # Replace with your
 TWILIO_AUTH = "demo"  # Replace with your Twilio Auth Token
 FROM_PHONE = "+1234567890"  # Replace with your Twilio phone number
 TO_PHONE = "+0987654321"  # Replace with your phone number
+FROM_EMAIL = "email@gmail.com"  # Replace with your email
+PASSWORD = "your_password"  # Replace with your email password or app password
+TO_EMAIL = "email@gmail.com"  # Replace with your email
 
 # When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
 def get_stock_data(stock_symbol):
@@ -80,6 +84,27 @@ def get_news(company_name):
     
     return articles
 
+# Send an email with the percentage change and each article's title and description to your email address.
+def send_email(percentage_change, articles, from_email, to_email, password):
+    if not articles:
+        print("No articles found to send.")
+        return
+    
+    subject = f"{STOCK}: {'🔺' if percentage_change > 0 else '🔻'}{abs(percentage_change):.2f}%"
+    body = "\n\n".join([f"Headline: {article['title']}\nBrief: {article['description']}" for article in articles])
+    
+    message = f"Subject: {subject}\n\n{body}"
+    
+    # Send the email using smtplib
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+            connection.starttls()
+            connection.login(user=from_email, password=password)  # Replace with your email password
+            connection.sendmail(from_addr=from_email, to_addrs=to_email, msg=message)
+            print(f"Sent Email: {subject}")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
 # Send a seperate message with the percentage change and each article's title and description to your phone number. 
 def send_sms(percentage_change, articles, from_phone, to_phone):
     if not articles:
@@ -106,6 +131,7 @@ try:
     percentage_change = get_stock_data(STOCK)
     if percentage_change is not None:
         articles = get_news(COMPANY_NAME)
+        send_email(percentage_change, articles, FROM_EMAIL, TO_EMAIL, PASSWORD)
         send_sms(percentage_change, articles, FROM_PHONE, TO_PHONE)
 except Exception as e:
     print(f"An error occurred: {e}")
