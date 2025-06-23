@@ -52,3 +52,10 @@ pixela.update_pixel(
     date=None,  # Defaults to today's date
     quantity=8.0  # New value for the pixel
 )
+
+
+# Delete a pixel for a specific date
+pixela.delete_pixel(
+    graph_id="YOUR_GRAPH",
+    date="YYYYMMDD"  # Replace with the actual date in YYYYMMDD format
+)

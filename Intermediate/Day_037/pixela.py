@@ -242,4 +242,32 @@ class Pixela:
         else:
             print(f"Failed to update pixel: {response.status_code} - {response.text}")
     
- 
+    def delete_pixel(self, graph_id, date=None):
+        """
+        Deletes a pixel for the specified graph.
+
+        Args:
+            graph_id (str): The ID of the graph containing the pixel to be deleted.
+            date (str, optional): The date for the pixel in YYYYMMDD format. Defaults to today.
+
+        Raises:
+            HTTPError: If the request to delete the pixel fails.
+
+        Prints:
+            Success or failure message based on the response from the Pixela API.
+        """
+        if self.username is None or self.token is None:
+            raise ValueError("Username and token must be set before deleting a pixel.")
+        if date is None:
+            date = dt.datetime.now().strftime("%Y%m%d")
+        pixel_endpoint = f"{self.pixela_endpoint}/{self.username}/graphs/{graph_id}/{date}"
+        headers = {
+            "X-USER-TOKEN": self.token
+        }
+        response = requests.delete(pixel_endpoint, headers=headers)
+        response.raise_for_status()
+        if response.status_code == 200:
+            print("Pixel deleted successfully.")
+        else:
+            print(f"Failed to delete pixel: {response.status_code} - {response.text}")
+            
