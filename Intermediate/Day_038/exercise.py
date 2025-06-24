@@ -1,59 +1,40 @@
 import requests
 import datetime as dt
-import re
 from dotenv import load_dotenv
 import os
 
-load_dotenv(dotenv_path="Intermediate/Day_038/daysdata.env")
+from sheety import WorkOutSheet
 
-API_KEY = os.getenv("API_KEY")
-APP_ID = os.getenv("APP_ID")
+load_dotenv(dotenv_path=".env")
+
+API_KEY = os.getenv("NUTRITIONIX_API_KEY")
+APP_ID = os.getenv("NUTRITIONIX_APP_ID")
+SHEETY_TOKEN = os.getenv("SHEETY_TOKEN")
 HOST_DOMAIN = "https://trackapi.nutritionix.com"
 END_POINT = "/v2/natural/exercise"
 
-WEIGHT = 82
-HEIGHT = 180
-AGE = 25
+sheety = WorkOutSheet()
 
-SHEETY_URL = 'https://api.sheety.co/3cb5d478ce406a3726ba20311a156646/workoutTracking/users'
 
-sheet_request = requests.get(SHEETY_URL)
-sheet_request_json = sheet_request.json()
 
-user_message = input("Tell me which exercises you did?\nExample: Running for 3km and Swim 1 hour, or just running 30 minutes\n")
+sheety.is_login()
+while True:
+    while True:
+        choice = input("What do you want to do?\n1. Add Workout\n2. Edit Profile\n0. Exit\n\nInput number only: ")
+        try:
+            choice = int(choice)
+            if choice in [0, 1, 2]:
+                break
+            else:
+                print("Please enter the number")
+        except ValueError:
+            print("Invalid input. Please enter a number (0, 1, or 2).")
 
-DATE = get_valid_date()
-TIME = get_valid_time()
-
-header = {
-    'x-app-id': APP_ID,
-    'x-app-key': API_KEY,
-    # 'x-remote-user-id': 0
-}
-params = {
-    'query': user_message,
-    'weight_kg': WEIGHT,
-    'height_cm': HEIGHT,
-    'age': AGE
-}
-
-nutritionix_request = requests.post(HOST_DOMAIN+END_POINT, headers=header, json=params)
-data_nutritionix_json = nutritionix_request.json()
-
-for data_exercise in data_nutritionix_json['exercises']:
-    new_data = {'workout':
-                {
-            'date':DATE,
-            'time':TIME,
-            'exercise': data_exercise['name'].title(),
-            'duration': data_exercise['duration_min'],
-            'calories': data_exercise['nf_calories']
-        }
-    }
-    print(new_data)
-
-    request = requests.post(SHEETY_URL, json=new_data)
-    request.raise_for_status()
-
-request = requests.get(SHEETY_URL)
-request.json()
+    if choice == 1:
+        user_message = input("Tell me which exercises you did?\nExample: Running for 3km and Swim 1 hour, or just running 30 minutes\n")
+        sheety.add_workout(user_message)
+    elif choice == 2:
+        sheety.get_workout_data()
+    else:
+        print("Thank you for using the app")
+        break
