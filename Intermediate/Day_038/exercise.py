@@ -1,9 +1,13 @@
 import requests
 import datetime as dt
 import re
+from dotenv import load_dotenv
+import os
 
-API_KEY = "b198f9d1b356f652fede5bc9d60a8256" 
-APP_ID = "964a9c74"
+load_dotenv(dotenv_path="Intermediate/Day_038/daysdata.env")
+
+API_KEY = os.getenv("API_KEY")
+APP_ID = os.getenv("APP_ID")
 HOST_DOMAIN = "https://trackapi.nutritionix.com"
 END_POINT = "/v2/natural/exercise"
 
@@ -17,8 +21,6 @@ sheet_request = requests.get(SHEETY_URL)
 sheet_request_json = sheet_request.json()
 
 user_message = input("Tell me which exercises you did?\nExample: Running for 3km and Swim 1 hour, or just running 30 minutes\n")
-
-
 
 DATE = get_valid_date()
 TIME = get_valid_time()
