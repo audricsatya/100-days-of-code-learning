@@ -13,6 +13,8 @@ load_dotenv(dotenv_path="Intermediate/Day_039/.env")
 SHEETY_TOKEN = os.getenv("SHEETY_TOKEN")
 AMADEUS_KEY = os.getenv("AMADEUS_KEY")
 AMADEUS_SECRET = os.getenv("AMADEUS_SECRET")
+USER_EMAIL = os.getenv("EMAIL")
+PASSWORD = os.getenv("PASS")
 
 URL = "https://test.api.amadeus.com/v1/security/oauth2/token"
 header = {
@@ -30,13 +32,17 @@ access_token = token_request.json()['access_token']
 datamart = DataManager(SHEETY_TOKEN)
 dataflight = FlightData(access_token)
 datasearch = FlightSearch(access_token)
+notification = NotificationManager(USER_EMAIL, PASSWORD)
 
-df = datamart.get_data()
+destination_data = datamart.get_data()
+
 user_location = input("What city will you depart from? ")
+
 user_iata = dataflight.get_iata_code(user_location)
 
 # Data Checker simulation
 data_dict = datamart.data_prices_json['prices']
+
 for data in data_dict:
     if data['iataCode'] == "":
         iata_code = dataflight.get_iata_code(data['city'])
@@ -47,18 +53,17 @@ for data in data_dict:
         datamart.edit_data(updated_json, data['id'])
 del data_dict, data
 
-data_flight = datasearch.flight_list(
-    user_iata="JKT", 
+data_flight, flight_details = datasearch.flight_list(
+    user_iata=user_iata, 
     destination_iata="SIN", 
-    max_depature_date="2025-06-30", 
+    max_depature_date="2025-07-30", 
     max_price=250,
     nonStop="false"
 )
+pd.json_normalize(datasearch.request.json()['data'])
 
-data_flight.sort_values(["lastTicketingDate","price"])
+data_flight.sort_values(["price"])
 data_flight['price'] = data_flight['price'].astype(float)
-# Using pandas to get the row with the lowest price
+
 lowest = data_flight.loc[data_flight['price'].idxmin()]
-print(f"Lowest price: {lowest['price']}")
-print(f"Last ticketing date: {lowest['lastTicketingDate']}")
-print(f"Flight ID: {lowest['id']}")
+

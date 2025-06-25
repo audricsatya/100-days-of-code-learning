@@ -31,13 +31,13 @@ class FlightSearch:
                 parameter['travelClass'] = travel_class
             else:
                 print('Travel Class wrong input. Shows every class available.')
-                
+
         self.request = requests.get(URL+'shopping/flight-offers', headers=self.header, params=parameter)
         self.request.raise_for_status
 
         flight_json = self.request.json()
         flight_data = []
-        flight_details = pd.DataFrame()
+        flight_details = pd.json_normalize(flight_json['data'])
 
         for data in flight_json['data']:
             number_of_transit = len(data['itineraries'][0]['segments'])
@@ -54,9 +54,6 @@ class FlightSearch:
                 "price": data['price']['grandTotal'],
                 "airlines": data['validatingAirlineCodes']
             }
-
-            temp_detail_data = pd.json_normalize(data)
-            flight_details = pd.concat(flight_details,temp_detail_data)
 
             flight_data.append(temp_data)
 

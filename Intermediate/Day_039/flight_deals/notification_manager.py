@@ -18,3 +18,7 @@ class NotificationManager:
                 print(f"Email to {target_email} successfully sent.")
         except Exception as e:
             print(f"Failed to send email: {e}")
+
+    def create_message(self, destination, departure_airport, arrival_airport, price):
+        message = f"Subject:Cheapest Ticket {destination}!\n\nHey, found you a great ticket for your destination.\nDeparture: {departure_airport}\nArrival: {arrival_airport}\nprice: {price}\n\nGet your travel detail!\nRegards,\nAudric Satya"
+        return message
