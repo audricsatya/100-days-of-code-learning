@@ -1,7 +1,7 @@
-from Intermediate.Day_039.flight_deals.data_manager import DataManager
-from Intermediate.Day_039.flight_deals.flight_data import FlightData
-from Intermediate.Day_039.flight_deals.flight_search import FlightSearch
-from Intermediate.Day_039.flight_deals.notification_manager import NotificationManager
+from data_manager import DataManager
+from flight_data import FlightData
+from flight_search import FlightSearch
+from notification_manager import NotificationManager
 from dotenv import load_dotenv
 
 import os
@@ -27,6 +27,8 @@ payload = {
 }
 
 token_request = requests.post(URL, headers=header, data=payload)
+del header, payload
+
 access_token = token_request.json()['access_token']
 
 datamart = DataManager(SHEETY_TOKEN)
@@ -37,6 +39,7 @@ notification = NotificationManager(USER_EMAIL, PASSWORD)
 destination_data = datamart.get_data()
 
 user_location = input("What city will you depart from? ")
+TARGET_MAIL = input("Email for notification: ")
 
 user_iata = dataflight.get_iata_code(user_location)
 
@@ -51,19 +54,32 @@ for data in data_dict:
             'price':data
         }
         datamart.edit_data(updated_json, data['id'])
-del data_dict, data
+del data_dict, data, 
 
-data_flight, flight_details = datasearch.flight_list(
-    user_iata=user_iata, 
-    destination_iata="SIN", 
-    max_depature_date="2025-07-30", 
-    max_price=250,
-    nonStop="false"
-)
-pd.json_normalize(datasearch.request.json()['data'])
+for idx, row in destination_data.iterrows():
+    destination_iata = row['iataCode']
+    data_flight, flight_details = datasearch.flight_list(
+        user_iata=user_iata,
+        destination_iata=destination_iata,
+        # max_price=250,
+        nonStop="false"
+    )
 
-data_flight.sort_values(["price"])
-data_flight['price'] = data_flight['price'].astype(float)
+    if data_flight.empty:
+        continue
 
-lowest = data_flight.loc[data_flight['price'].idxmin()]
+    data_flight = data_flight.sort_values("price")
+    lowest = data_flight.iloc[0]
 
+    if row['lowestPrice'] >= lowest['price']:
+        message = notification.create_message(
+            destination=f"{user_location} - {row['city']}",
+            departure_airport=lowest['departure'],
+            arrival_airport=lowest['arrival'],
+            price=lowest['price']
+        )
+
+        print(message)
+        notification.send_email(message, TARGET_MAIL)
+
+        flight_details.to_excel(f"{user_location} - {row['city']}_detail.xlsx", index=False)

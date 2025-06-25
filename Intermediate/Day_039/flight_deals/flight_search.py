@@ -12,9 +12,9 @@ class FlightSearch:
             'Authorization': f'Bearer {token}'
         }
     
-    def flight_list(self, user_iata, destination_iata, max_depature_date = None, nonStop = "false" ,travel_class = None, currency_code = "USD", number_of_passenger = 1,  max_price = int):
+    def flight_list(self, user_iata, destination_iata, max_depature_date = None, nonStop = "false" ,travel_class = None, currency_code = "USD", number_of_passenger = 1,  max_price = None):
         if max_depature_date is None:
-            max_depature_date = (dt.datetime.now() + dt.timedelta(days=7)).strftime("%Y-%m-%d")
+            max_depature_date = (dt.datetime.now() + dt.timedelta(days=14)).strftime("%Y-%m-%d")
 
         parameter = {
             'originLocationCode': user_iata,
@@ -23,9 +23,11 @@ class FlightSearch:
             'adults': number_of_passenger,
             'nonStop': nonStop,
             'currencyCode': currency_code,
-            'maxPrice': max_price,
             'max': 250
         }
+
+        if max_price is not None:
+            parameter['maxPrice'] = max_price
         if travel_class is not None:
             if travel_class in ["ECONOMY", "PREMIUM_ECONOMY", "BUSINESS", "FIRST"]:
                 parameter['travelClass'] = travel_class
@@ -37,6 +39,7 @@ class FlightSearch:
 
         flight_json = self.request.json()
         flight_data = []
+
         flight_details = pd.json_normalize(flight_json['data'])
 
         for data in flight_json['data']:
@@ -49,9 +52,9 @@ class FlightSearch:
                 "numberOfTransit": number_of_transit,
                 "totalFlightDuration": data['itineraries'][0]['duration'],
                 "departure": data['itineraries'][0]['segments'][0]['departure']['iataCode'],
-                "arrival": data['itineraries'][0]['segments'][number_of_transit-1]['departure']['iataCode'],
+                "arrival": data['itineraries'][0]['segments'][number_of_transit-1]['arrival']['iataCode'],
                 "currency": data['price']['currency'],
-                "price": data['price']['grandTotal'],
+                "price": float(data['price']['grandTotal']),
                 "airlines": data['validatingAirlineCodes']
             }
 
