@@ -1,7 +1,6 @@
 import requests
 import pandas as pd
 import datetime as dt
-import os
 import re
 
 SHEETY_URL = 'https://api.sheety.co/3cb5d478ce406a3726ba20311a156646/workoutTracking/'
@@ -48,7 +47,7 @@ class WorkOutSheet:
                 return username
 
     def create_user(self):
-        username = input("Enter your username: ")
+        username = input("Enter your username: ").lower()
         username = self.check_username(username)
         name = input("Enter your name: ")
         height = input("Enter your height: ")
@@ -72,7 +71,7 @@ class WorkOutSheet:
 
     def get_user(self, username, password):
         for user in self.user_data['users']:
-            if user['username'] == username and user['password'] == password:
+            if user['username'] == username.lower() and user['password'] == password:
                 print("Login successful.")
                 self.username = username 
                 self.name = user['name']
@@ -164,11 +163,11 @@ class WorkOutSheet:
             }
             print(new_data)
 
-            add_workout_data = requests.post(SHEETY_URL, json=new_data, headers=self.header_sheety)
+            add_workout_data = requests.post(SHEETY_URL+"workouts", json=new_data, headers=self.header_sheety)
             add_workout_data.raise_for_status()
 
     def get_workout_data(self):
         print(f"Hello {self.name}\n")
-        user_workout = self.workout_df[self.workout_data['User']==self.username]
+        user_workout = self.workout_df[self.workout_df['user']==self.username]
         print(user_workout)
         print("Dont forget to workout!")
