@@ -16,6 +16,10 @@ dataflight = FlightData(token=flight_search._token)
 # Set your origin airport
 user_location = input("What city will you depart from? ")
 
+customer_data = data_manager.get_user_data()
+# Verify the name of your email column in your sheet. Yours may be different from mine
+customer_email_list = [row["whatIsYourEmail?"] for row in customer_data]
+
 ORIGIN_CITY_IATA = dataflight.get_iata_code(user_location)
 print(ORIGIN_CITY_IATA)
 
@@ -57,6 +61,8 @@ for destination in sheet_data:
         message = notification_manager.create_message(
             destination=f"{user_location} - ",
             departure_airport=user_location,
-            arrival_airport=destination
+            arrival_airport=destination,
         )
-        notification_manager.send_email(message, target_email="email")
+
+        for email in customer_email_list:
+            notification_manager.send_email(message, target_email=email)
