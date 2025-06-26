@@ -12,14 +12,17 @@ class FlightSearch:
             'Authorization': f'Bearer {token}'
         }
     
-    def flight_list(self, user_iata, destination_iata, max_depature_date = None, nonStop = "false" ,travel_class = None, currency_code = "USD", number_of_passenger = 1,  max_price = None):
+    def flight_list(self, user_iata, destination_iata, max_depature_date = None, max_return_date = None, nonStop = "false" ,travel_class = None, currency_code = "USD", number_of_passenger = 1,  max_price = None):
         if max_depature_date is None:
-            max_depature_date = (dt.datetime.now() + dt.timedelta(days=14)).strftime("%Y-%m-%d")
+            max_depature_date = (dt.datetime.now() + dt.timedelta(days=1)).strftime("%Y-%m-%d")
+        if max_return_date is None:
+            max_return_date = (pd.to_datetime(max_depature_date, format="%Y-%m-%d") + dt.timedelta(month=1)).strftime("%Y-%m-%d")
 
         parameter = {
             'originLocationCode': user_iata,
             'destinationLocationCode': destination_iata,
             'departureDate': max_depature_date,
+            'returnDate': max_return_date,
             'adults': number_of_passenger,
             'nonStop': nonStop,
             'currencyCode': currency_code,

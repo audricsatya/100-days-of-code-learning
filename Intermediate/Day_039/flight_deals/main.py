@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 
 import os
 import requests
-import pandas as pd
 
 load_dotenv(dotenv_path="Intermediate/Day_039/.env")
 
