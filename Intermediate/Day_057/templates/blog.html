@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog</title>
+</head>
+<body>
+    <h1>Blog Posts</h1>
+    {% for post in posts %}
+        {% if post['id'] == post_id %}
+        <div class="post">
+            <h2>{{ post['title'] }}</h2>
+            <h3>{{ post['subtitle'] }}</h2>
+            <p>{{ post['body'] }}</p>
+        </div>
+        {% endif %}
+    {% endfor %}
+</body>
+<footer>
+    <div style="text-align: center; margin-top: 20px;">
+        &copy; {{copy_year}} - Audric Satya
+    </div>
+</footer>
+</html>
