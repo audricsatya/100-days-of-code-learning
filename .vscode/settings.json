@@ -1,4 +1,5 @@
 {
     "python.analysis.enableTroubleshootMissingImports": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "livePreview.defaultPreviewPath": "/Intermediate/Day_058/11.2 Bootstrap Components/index.html"
 }
