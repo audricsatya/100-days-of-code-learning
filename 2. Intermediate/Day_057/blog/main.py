@@ -25,7 +25,9 @@ def show_post(index):
             requested_post = blog_post
     return render_template("post.html", post=requested_post, copy_year=CURRENT_YEAR)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     for post in posts_objects:
+#         print(post)
+#     app.run(debug=True)
 
 

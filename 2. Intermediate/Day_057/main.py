@@ -2,7 +2,6 @@ from flask import Flask, render_template
 import random
 import datetime as dt
 import requests
-import json
 
 app = Flask(__name__)
 CURRENT_YEAR = dt.datetime.now().year
